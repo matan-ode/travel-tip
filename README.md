@@ -51,7 +51,9 @@ export const locService = {
     save,
     setFilterBy,
     setSortBy,
-    getLocCountByRateMap
+    getLocCountByRateMap,
+    getLocCountByUpdateMap,
+    getDate
 }
 
 export const mapService = {
@@ -78,7 +80,11 @@ window.app = {
     onCopyLoc,
     onShareLoc,
     onSetSortBy,
-    onSetFilterBy
+    onSetFilterBy,
+    onGetDistanceHtml,
+    onCloseDialogModal,
+    addLoc,
+    updateLoc,
 }
 ```
 
@@ -86,6 +92,7 @@ Here is a sample usage:
 ```html
 <button onclick="app.onCopyLoc()">Copy location</button>
 <button onclick="app.onShareLoc()">Share location</button>
+ <button class="cancel-btn" onclick="app.onCloseDialogModal()">Cancel</button>
 ```
 
 
