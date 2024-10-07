@@ -53,12 +53,20 @@ function query() {
             }
 
             if (gSortBy.rate !== undefined) {
-                locs.sort((p1, p2) => (p1.rate - p2.rate) * gSortBy.rate)
+                locs.sort((p1, p2) => {
+                    console.log('by rate')
+                    return (p1.rate - p2.rate) * gSortBy.rate
+                })
             } else if (gSortBy.name !== undefined) {
-                console.log(gSortBy);
-
-                locs.sort((p1, p2) => p1.geo.address.localeCompare(p2.geo.address) * gSortBy.name)
-                // locs.sort((p1, p2) => p1.name.localeCompare(p2.name) * gSortBy.name)
+                locs.sort((p1, p2) => {
+                    console.log('by name')
+                    p1.name.localeCompare(p2.name) * gSortBy.name
+                })
+            } else if (gSortBy.createdAt !== undefined) {
+                locs.sort((p1, p2) => {
+                    console.log('by creation')
+                    return (p1.createdAt - p2.createdAt) * gSortBy.createdAt
+                })
             }
 
             return locs
