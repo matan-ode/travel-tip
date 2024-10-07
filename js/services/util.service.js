@@ -41,7 +41,7 @@ function randomPastTime() {
     const DAY = 1000 * 60 * 60 * 24
     const WEEK = 1000 * 60 * 60 * 24 * 7
 
-    const pastTime = getRandomIntInclusive(HOUR, WEEK)
+    const pastTime = getRandomIntInclusive(HOUR, WEEK)    
     return Date.now() - pastTime
 }
 
