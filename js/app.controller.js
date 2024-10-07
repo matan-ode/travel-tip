@@ -4,6 +4,9 @@ import { mapService } from './services/map.service.js'
 
 window.onload = onInit
 
+var gUserPos = {}
+var gIsClickUserPos = false
+
 // To make things easier in this project structure 
 // functions that are called from DOM are defined on a global app object
 window.app = {
@@ -16,6 +19,7 @@ window.app = {
     onShareLoc,
     onSetSortBy,
     onSetFilterBy,
+    onGetDistanceHtml
 }
 
 function onInit() {
@@ -30,6 +34,7 @@ function onInit() {
             console.error('OOPs:', err)
             flashMsg('Cannot init map')
         })
+    // onPanToUserPos()
 }
 
 function renderLocs(locs) {
@@ -41,6 +46,7 @@ function renderLocs(locs) {
         <li class="loc ${className}" data-id="${loc.id}">
             <h4>  
                 <span>${loc.name}</span>
+                <span class="distance">${onGetDistanceHtml(loc)}</span>
                 <span title="${loc.rate} stars">${'★'.repeat(loc.rate)}</span>
             </h4>
             <p class="muted">
@@ -66,6 +72,22 @@ function renderLocs(locs) {
         displayLoc(selectedLoc)
     }
     document.querySelector('.debug').innerText = JSON.stringify(locs, null, 2)
+}
+
+function onGetDistanceHtml(loc) {
+    let strHtml = ''
+    const locLat = loc.geo.lat
+    const locLng = loc.geo.lng
+    const latLng1 = { lat: locLat, lng: locLng }
+
+    const latLng2 = gUserPos
+    // const latLng2 = utilService.loadFromStorage('userPos') || { lat: gUserPos.lat, lng: gUserPos.lng }
+    // console.log(utilService.getDistance(latLng1, latLng2));
+
+    const distance = utilService.getDistance(latLng1, latLng2)
+
+    if (gIsClickUserPos) strHtml = `Distance: ${distance}KM`
+    return strHtml
 }
 
 function onRemoveLoc(locId) {
@@ -127,12 +149,18 @@ function loadAndRenderLocs() {
 }
 
 function onPanToUserPos() {
+    gIsClickUserPos = true
     mapService.getUserPosition()
         .then(latLng => {
             mapService.panTo({ ...latLng, zoom: 15 })
             unDisplayLoc()
             loadAndRenderLocs()
             flashMsg(`You are at Latitude: ${latLng.lat} Longitude: ${latLng.lng}`)
+
+            gUserPos = { lat: latLng.lat, lng: latLng.lng }
+            utilService.saveToStorage('userPos', gUserPos)
+            console.log(gUserPos);
+
         })
         .catch(err => {
             console.error('OOPs:', err)
@@ -179,6 +207,7 @@ function displayLoc(loc) {
     const el = document.querySelector('.selected-loc')
     el.querySelector('.loc-name').innerText = loc.name
     el.querySelector('.loc-address').innerText = loc.geo.address
+    el.querySelector('.loc-distance').innerText = `${onGetDistanceHtml(loc)}`
     el.querySelector('.loc-rate').innerHTML = '★'.repeat(loc.rate)
     el.querySelector('[name=loc-copier]').value = window.location
     el.classList.add('show')
@@ -224,6 +253,7 @@ function flashMsg(msg) {
 function getLocIdFromQueryParams() {
     const queryParams = new URLSearchParams(window.location.search)
     const locId = queryParams.get('locId')
+    // console.log(locId);
     return locId
 }
 
