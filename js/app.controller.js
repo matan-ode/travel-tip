@@ -239,6 +239,8 @@ function onSetSortBy() {
     //     [prop] : (isDesc)? -1 : 1
     // }
 
+    console.log(sortBy)
+
     locService.setSortBy(sortBy)
     loadAndRenderLocs()
 }
@@ -251,7 +253,6 @@ function onSetFilterBy({ txt, minRate }) {
 
 function renderLocStats() {
     locService.getLocCountByRateMap().then(stats => {
-        console.log('stats:', stats)
         handleStats(stats, 'loc-stats-rate')
     })
 }
