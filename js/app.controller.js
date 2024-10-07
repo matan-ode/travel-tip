@@ -5,6 +5,7 @@ import { mapService } from './services/map.service.js'
 window.onload = onInit
 
 var gUserPos = {}
+var gIsClickUserPos = false
 
 // To make things easier in this project structure 
 // functions that are called from DOM are defined on a global app object
@@ -18,22 +19,22 @@ window.app = {
     onShareLoc,
     onSetSortBy,
     onSetFilterBy,
-    onGetDistance
+    onGetDistanceHtml
 }
 
 function onInit() {
     loadAndRenderLocs()
-    
+
     mapService.initMap()
-    .then(() => {
-        // onPanToTokyo()
-        mapService.addClickListener(onAddLoc)
-    })
-    .catch(err => {
-        console.error('OOPs:', err)
-        flashMsg('Cannot init map')
-    })
-    onPanToUserPos()
+        .then(() => {
+            // onPanToTokyo()
+            mapService.addClickListener(onAddLoc)
+        })
+        .catch(err => {
+            console.error('OOPs:', err)
+            flashMsg('Cannot init map')
+        })
+    // onPanToUserPos()
 }
 
 function renderLocs(locs) {
@@ -45,7 +46,7 @@ function renderLocs(locs) {
         <li class="loc ${className}" data-id="${loc.id}">
             <h4>  
                 <span>${loc.name}</span>
-                <span>Distance: ${onGetDistance(loc)}KM</span>
+                <span class="distance">${onGetDistanceHtml(loc)}</span>
                 <span title="${loc.rate} stars">${'★'.repeat(loc.rate)}</span>
             </h4>
             <p class="muted">
@@ -73,15 +74,19 @@ function renderLocs(locs) {
     document.querySelector('.debug').innerText = JSON.stringify(locs, null, 2)
 }
 
-function onGetDistance(loc){
+function onGetDistanceHtml(loc) {
+    let strHtml = ''
     const locLat = loc.geo.lat
     const locLng = loc.geo.lng
-    const latLng1 = {lat:locLat, lng:locLng}
-    
-    const latLng2 = utilService.loadFromStorage('userPos') || {lat: gUserPos.lat, lng:gUserPos.lng}
+    const latLng1 = { lat: locLat, lng: locLng }
+
+    const latLng2 = utilService.loadFromStorage('userPos') || { lat: gUserPos.lat, lng: gUserPos.lng }
     // console.log(utilService.getDistance(latLng1, latLng2));
-    
-    return utilService.getDistance(latLng1, latLng2)
+
+    const distance = utilService.getDistance(latLng1, latLng2)
+
+    if (gIsClickUserPos) strHtml = `Distance: ${distance}KM`
+    return strHtml
 }
 
 function onRemoveLoc(locId) {
@@ -141,17 +146,18 @@ function loadAndRenderLocs() {
 }
 
 function onPanToUserPos() {
+    gIsClickUserPos = true
     mapService.getUserPosition()
         .then(latLng => {
             mapService.panTo({ ...latLng, zoom: 15 })
             unDisplayLoc()
             loadAndRenderLocs()
             flashMsg(`You are at Latitude: ${latLng.lat} Longitude: ${latLng.lng}`)
-            
-            gUserPos = {lat: latLng.lat, lng: latLng.lng}
+
+            gUserPos = { lat: latLng.lat, lng: latLng.lng }
             utilService.saveToStorage('userPos', gUserPos)
             console.log(gUserPos);
-            
+
         })
         .catch(err => {
             console.error('OOPs:', err)
