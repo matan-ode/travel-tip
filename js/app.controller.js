@@ -4,7 +4,7 @@ import { mapService } from './services/map.service.js'
 
 window.onload = onInit
 
-const gUserPos = {}
+var gUserPos = {}
 
 // To make things easier in this project structure 
 // functions that are called from DOM are defined on a global app object
@@ -18,20 +18,22 @@ window.app = {
     onShareLoc,
     onSetSortBy,
     onSetFilterBy,
+    onGetDistance
 }
 
 function onInit() {
     loadAndRenderLocs()
-
+    
     mapService.initMap()
-        .then(() => {
-            // onPanToTokyo()
-            mapService.addClickListener(onAddLoc)
-        })
-        .catch(err => {
-            console.error('OOPs:', err)
-            flashMsg('Cannot init map')
-        })
+    .then(() => {
+        // onPanToTokyo()
+        mapService.addClickListener(onAddLoc)
+    })
+    .catch(err => {
+        console.error('OOPs:', err)
+        flashMsg('Cannot init map')
+    })
+    onPanToUserPos()
 }
 
 function renderLocs(locs) {
@@ -43,6 +45,7 @@ function renderLocs(locs) {
         <li class="loc ${className}" data-id="${loc.id}">
             <h4>  
                 <span>${loc.name}</span>
+                <span>Distance: ${onGetDistance(loc)}KM</span>
                 <span title="${loc.rate} stars">${'★'.repeat(loc.rate)}</span>
             </h4>
             <p class="muted">
@@ -68,6 +71,17 @@ function renderLocs(locs) {
         displayLoc(selectedLoc)
     }
     document.querySelector('.debug').innerText = JSON.stringify(locs, null, 2)
+}
+
+function onGetDistance(loc){
+    const locLat = loc.geo.lat
+    const locLng = loc.geo.lng
+    const latLng1 = {lat:locLat, lng:locLng}
+    
+    const latLng2 = utilService.loadFromStorage('userPos') || {lat: gUserPos.lat, lng:gUserPos.lng}
+    // console.log(utilService.getDistance(latLng1, latLng2));
+    
+    return utilService.getDistance(latLng1, latLng2)
 }
 
 function onRemoveLoc(locId) {
@@ -133,7 +147,11 @@ function onPanToUserPos() {
             unDisplayLoc()
             loadAndRenderLocs()
             flashMsg(`You are at Latitude: ${latLng.lat} Longitude: ${latLng.lng}`)
-            // gUserPos = {lat: latLng.lat, lng: latLng.lng}
+            
+            gUserPos = {lat: latLng.lat, lng: latLng.lng}
+            utilService.saveToStorage('userPos', gUserPos)
+            console.log(gUserPos);
+            
         })
         .catch(err => {
             console.error('OOPs:', err)
@@ -225,6 +243,7 @@ function flashMsg(msg) {
 function getLocIdFromQueryParams() {
     const queryParams = new URLSearchParams(window.location.search)
     const locId = queryParams.get('locId')
+    // console.log(locId);
     return locId
 }
 
