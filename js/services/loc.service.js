@@ -53,7 +53,10 @@ function query() {
             if (gSortBy.rate !== undefined) {
                 locs.sort((p1, p2) => (p1.rate - p2.rate) * gSortBy.rate)
             } else if (gSortBy.name !== undefined) {
-                locs.sort((p1, p2) => p1.name.localeCompare(p2.name) * gSortBy.name)
+                console.log(gSortBy);
+
+                locs.sort((p1, p2) => p1.geo.address.localeCompare(p2.geo.address) * gSortBy.name)
+                // locs.sort((p1, p2) => p1.name.localeCompare(p2.name) * gSortBy.name)
             }
 
             return locs
