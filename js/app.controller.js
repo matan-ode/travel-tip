@@ -204,6 +204,7 @@ function displayLoc(loc) {
     const el = document.querySelector('.selected-loc')
     el.querySelector('.loc-name').innerText = loc.name
     el.querySelector('.loc-address').innerText = loc.geo.address
+    el.querySelector('.loc-distance').innerText = `${onGetDistanceHtml(loc)}`
     el.querySelector('.loc-rate').innerHTML = '★'.repeat(loc.rate)
     el.querySelector('[name=loc-copier]').value = window.location
     el.classList.add('show')
