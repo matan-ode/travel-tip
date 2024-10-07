@@ -80,7 +80,8 @@ function onGetDistanceHtml(loc) {
     const locLng = loc.geo.lng
     const latLng1 = { lat: locLat, lng: locLng }
 
-    const latLng2 = utilService.loadFromStorage('userPos') || { lat: gUserPos.lat, lng: gUserPos.lng }
+    const latLng2 = gUserPos
+    // const latLng2 = utilService.loadFromStorage('userPos') || { lat: gUserPos.lat, lng: gUserPos.lng }
     // console.log(utilService.getDistance(latLng1, latLng2));
 
     const distance = utilService.getDistance(latLng1, latLng2)
