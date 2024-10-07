@@ -41,7 +41,7 @@ function randomPastTime() {
     const DAY = 1000 * 60 * 60 * 24
     const WEEK = 1000 * 60 * 60 * 24 * 7
 
-    const pastTime = getRandomIntInclusive(HOUR, WEEK)
+    const pastTime = getRandomIntInclusive(HOUR, WEEK)    
     return Date.now() - pastTime
 }
 
@@ -95,7 +95,7 @@ function getColors() {
 }
 
 function getDistance(latLng1, latLng2, unit = 'K') {
-    if ((latLng1.lat == latLng2.lat) && (latLng1.lng == latLng2.lng)) {
+    if ((latLng1.lat === latLng2.lat) && (latLng1.lng === latLng2.lng)) {
         return 0
     }
     else {
