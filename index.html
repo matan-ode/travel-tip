@@ -25,10 +25,22 @@
             </button>
         </form>
     </header>
+
     <main>
         <div class="map"></div>
         <div>
             <section class="locs-container">
+                <dialog class="add-update-modal">
+                    <label for="loc-name">Loc Name:</label>
+                    <input id="loc-name" class="loc-name" />
+
+                    <label for="rate">Rate:</label>
+                    <input type="number" id="rate" class="rate" placeholder="choose 1-5" min="1" />
+
+                    <button class="dialog-btn"></button>
+                    <button class="cancel-btn" onclick="app.onCloseDialogModal()">Cancel</button>
+                </dialog>
+
                 <section class="loc-filter">
                     <div>
                         <input type="text" placeholder="Search location"
@@ -63,6 +75,7 @@
                         <ul class="legend"></ul>
                     </div>
                 </section>
+
             </section>
         </div>
     </main>

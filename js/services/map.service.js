@@ -39,10 +39,12 @@ function lookupAddressGeo(geoOrAddress) {
     url += (geoOrAddress.lat) ? `latlng=${geoOrAddress.lat},${geoOrAddress.lng}` :
         `address=${geoOrAddress}`
 
+    console.log('geoOrAddress:', geoOrAddress)
+
     return fetch(url)
         .then(res => res.json())
         .then(res => {
-            // console.log('RES IS', res)
+            console.log('RES IS', res)
             if (!res.results.length) return new Error('Found nothing')
             res = res.results[0]
             const { formatted_address, geometry } = res

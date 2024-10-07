@@ -1,0 +1,8 @@
+* {
+    box-sizing: border-box;
+}
+
+dialog {
+    width: 200px;
+    height: 200px;
+}

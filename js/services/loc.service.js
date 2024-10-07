@@ -74,6 +74,7 @@ function save(loc) {
         return storageService.put(DB_KEY, loc)
     } else {
         loc.createdAt = loc.updatedAt = Date.now()
+        console.log('added loc from save', loc)
         return storageService.post(DB_KEY, loc)
     }
 }
